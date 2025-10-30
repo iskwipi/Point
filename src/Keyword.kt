@@ -1,4 +1,4 @@
-enum class Keyword(val word: String) {
+enum class Keyword(private val word: String) {
     TRUE("True"),
     FALSE("False"),
     NOTHING("Nothing"),
@@ -13,6 +13,8 @@ enum class Keyword(val word: String) {
     XOR("xor"),
     NOT("not"),
     OTHERWISE("otherwise");
+
+    fun getWord(): String = word
 
     companion object {
         private val wordToKeyword: Map<String, Keyword> =

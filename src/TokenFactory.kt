@@ -17,7 +17,7 @@ object TokenFactory {
     fun createKeyword(keyword: Keyword?, line: Int): Token {
         return Token(
             keyword?.name ?: "INVALID",
-            keyword?.word.toString(),
+            keyword?.getWord().toString(),
             null,
             line
         )
@@ -25,7 +25,7 @@ object TokenFactory {
     fun createOperator(operator: Operator?, line: Int): Token {
         return Token(
             operator?.name ?: "INVALID",
-            operator?.symbol.toString(),
+            operator?.getSymbol().toString(),
             null,
             line
         )
@@ -33,7 +33,7 @@ object TokenFactory {
     fun createGrouper(grouper: Grouper?, line: Int): Token {
         return Token(
             grouper?.name ?: "INVALID",
-            grouper?.symbol.toString(),
+            grouper?.getSymbol().toString(),
             null,
             line
         )

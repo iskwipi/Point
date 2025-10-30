@@ -1,5 +1,5 @@
-object Scanner {
-    fun scanString(input: String): MutableList<Token> {
+class Scanner(private val input: String) {
+    fun scanString(): MutableList<Token> {
         // global vars
         val tokenList = mutableListOf<Token>()
         val string = input + "\n"
@@ -44,7 +44,7 @@ object Scanner {
                 if (Grouper.isOpener(token[0])) {
                     grouperStack.addFirst(Pair(token, line))
                 } else {
-                    if (grouperStack.isNotEmpty() && Grouper.fromSymbol(token)?.pair == Grouper.fromSymbol(grouperStack[0].first)?.pair) {
+                    if (grouperStack.isNotEmpty() && Grouper.isPair(token, grouperStack[0].first)) {
                         grouperStack.removeFirst()
                     } else {
                         println("Error at line $line: Mismatched grouping symbol '$token'")

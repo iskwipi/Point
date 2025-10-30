@@ -1,4 +1,4 @@
-enum class Operator(val symbol: String) {
+enum class Operator(private val symbol: String) {
     PLUS("+"),
     MINUS("-"),
     TIMES("*"),
@@ -21,6 +21,8 @@ enum class Operator(val symbol: String) {
     RIGHT_ARROW("->"),
     LAMBDA_ARROW("=>"),
     FORWARDER(">>");
+
+    fun getSymbol(): String = symbol
 
     companion object {
         private const val VALID_START = "+-*/%^<>=!:?,()[]{};"
