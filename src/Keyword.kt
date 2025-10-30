@@ -1,19 +1,25 @@
-enum class Keyword() {
-    VAR,
-    FUNC,
-    CLASS,
-    IF,
-    ELSE,
-    WHEN,
-    FOR,
-    WHILE,
-    DO,
-    BREAK,
-    CONTINUE;
+enum class Keyword(val word: String) {
+    TRUE("True"),
+    FALSE("False"),
+    NOTHING("Nothing"),
+    BOOL_DEF("Bool"),
+    INT_DEF("Int"),
+    FLOAT_DEF("Float"),
+    STRING_DEF("String"),
+    FUNCTION_DEF("Function"),
+    ANY_DEF("Any"),
+    AND("and"),
+    OR("or"),
+    XOR("xor"),
+    NOT("not"),
+    OTHERWISE("otherwise");
 
     companion object {
-        fun isKeyword(word: String): Boolean = word in Keyword.entries.map{ it.toString().lowercase() }
+        private val wordToKeyword: Map<String, Keyword> =
+            entries.toTypedArray().associateBy { it.word }
 
-        fun fromString(word: String): Keyword = Keyword.valueOf(word.uppercase())
+        fun fromWord(word: String): Keyword? = wordToKeyword[word]
+
+        fun isKeyword(word: String): Boolean = fromWord(word) != null
     }
 }

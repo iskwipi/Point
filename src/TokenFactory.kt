@@ -14,10 +14,10 @@ object TokenFactory {
     fun createIdentifier(string: String, line: Int): Token {
         return Token("IDENTIFIER", "", string, line)
     }
-    fun createKeyword(keyword: Keyword, line: Int): Token {
+    fun createKeyword(keyword: Keyword?, line: Int): Token {
         return Token(
-            keyword.name,
-            keyword.name.lowercase(),
+            keyword?.name ?: "INVALID",
+            keyword?.word.toString(),
             null,
             line
         )
@@ -26,6 +26,14 @@ object TokenFactory {
         return Token(
             operator?.name ?: "INVALID",
             operator?.symbol.toString(),
+            null,
+            line
+        )
+    }
+    fun createGrouper(grouper: Grouper?, line: Int): Token {
+        return Token(
+            grouper?.name ?: "INVALID",
+            grouper?.symbol.toString(),
             null,
             line
         )
