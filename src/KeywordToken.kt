@@ -1,4 +1,4 @@
-enum class Keyword(private val word: String) {
+enum class KeywordToken(private val word: String): TokenType {
     TRUE("True"),
     FALSE("False"),
     NOTHING("Nothing"),
@@ -6,7 +6,6 @@ enum class Keyword(private val word: String) {
     INT_DEF("Int"),
     FLOAT_DEF("Float"),
     STRING_DEF("String"),
-    FUNCTION_DEF("Function"),
     ANY_DEF("Any"),
     AND("and"),
     OR("or"),
@@ -17,10 +16,10 @@ enum class Keyword(private val word: String) {
     fun getWord(): String = word
 
     companion object {
-        private val wordToKeyword: Map<String, Keyword> =
+        private val wordToKeyword: Map<String, KeywordToken> =
             entries.toTypedArray().associateBy { it.word }
 
-        fun fromWord(word: String): Keyword? = wordToKeyword[word]
+        fun fromWord(word: String): KeywordToken? = wordToKeyword[word]
 
         fun isKeyword(word: String): Boolean = fromWord(word) != null
     }

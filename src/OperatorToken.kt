@@ -1,4 +1,4 @@
-enum class Operator(private val symbol: String) {
+enum class OperatorToken(private val symbol: String): TokenType {
     PLUS("+"),
     MINUS("-"),
     TIMES("*"),
@@ -12,7 +12,6 @@ enum class Operator(private val symbol: String) {
     QUESTION("?"),
     COMMA(","),
     SEMICOLON(";"),
-
     LESS_EQUAL("<="),
     GREAT_EQUAL(">="),
     EQUAL_EQUAL("=="),
@@ -26,12 +25,12 @@ enum class Operator(private val symbol: String) {
 
     companion object {
         private const val VALID_START = "+-*/%^<>=!:?,()[]{};"
-        private val symbolToOperator: Map<String, Operator> =
+        private val symbolToOperator: Map<String, OperatorToken> =
             entries.toTypedArray().associateBy { it.symbol }
 
         fun isValidStart(char: Char): Boolean = char in VALID_START
 
-        fun fromSymbol(symbol: String): Operator? = symbolToOperator[symbol]
+        fun fromSymbol(symbol: String): OperatorToken? = symbolToOperator[symbol]
 
         fun isOperator(symbol: String): Boolean = fromSymbol(symbol) != null
     }

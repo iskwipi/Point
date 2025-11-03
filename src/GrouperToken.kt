@@ -1,4 +1,4 @@
-enum class Grouper(private val symbol: String, private val pair: Int) {
+enum class GrouperToken(private val symbol: String, private val pair: Int): TokenType {
     LEFT_PAREN("(", 1),
     RIGHT_PAREN(")", 1),
     LEFT_SQUARE("[", 2),
@@ -10,12 +10,12 @@ enum class Grouper(private val symbol: String, private val pair: Int) {
 
     companion object {
         private const val OPENERS = "([{"
-        private val symbolToGrouper: Map<String, Grouper> =
-            Grouper.entries.toTypedArray().associateBy { it.symbol }
+        private val symbolToGrouper: Map<String, GrouperToken> =
+            GrouperToken.entries.toTypedArray().associateBy { it.symbol }
 
         fun isOpener(char: Char): Boolean = char in OPENERS
 
-        fun fromSymbol(symbol: String): Grouper? = symbolToGrouper[symbol]
+        fun fromSymbol(symbol: String): GrouperToken? = symbolToGrouper[symbol]
 
         fun isGrouper(symbol: String): Boolean = fromSymbol(symbol) != null
 

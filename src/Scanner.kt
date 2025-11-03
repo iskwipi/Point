@@ -1,8 +1,9 @@
-class Scanner(private val input: String) {
-    fun scanString(): MutableList<Token> {
+class Scanner(private val string: String) {
+    val errorList = mutableListOf<Error>()
+
+    fun scanString(): List<Token> {
         // global vars
         val tokenList = mutableListOf<Token>()
-        val string = input + "\n"
         var index = 0
         var line = 1
         val grouperStack = mutableListOf<Pair<String, Int>>()
@@ -19,9 +20,6 @@ class Scanner(private val input: String) {
                     line++
                 } else {
                     tokenList.add(TokenFactory.createEnd(line))
-                    if (grouperStack.isNotEmpty()) {
-                        println("Error at line ${grouperStack[0].second}: Last unclosed grouping symbol '${grouperStack[0].first}'")
-                    }
                 }
             }else if (token == "~") {
                 // comments
@@ -34,30 +32,31 @@ class Scanner(private val input: String) {
                         index++
                     }
                     if (index >= string.length || string[index++ - 1] != '}' && string[index++] != '~') {
-                        println("Error at line $line: Unterminated comment")
+                        errorList.add(Error(line, "Scanner", "Unterminated comment"))
                     }
                 } else {
-                    println("Error at line $line: Unidentified character '$token'")
-                    continue
+                    errorList.add(Error(line, "Scanner", "Unidentified symbol '$token'"))
                 }
-            } else if (Grouper.isGrouper(token)) {
-                if (Grouper.isOpener(token[0])) {
+            } else if (GrouperToken.isGrouper(token)) {
+                if (GrouperToken.isOpener(token[0])) {
                     grouperStack.addFirst(Pair(token, line))
                 } else {
-                    if (grouperStack.isNotEmpty() && Grouper.isPair(token, grouperStack[0].first)) {
+                    if (grouperStack.isNotEmpty() && GrouperToken.isPair(token, grouperStack[0].first)) {
                         grouperStack.removeFirst()
                     } else {
-                        println("Error at line $line: Mismatched grouping symbol '$token'")
-                        continue
+                        errorList.add(Error(line, "Scanner", "Mismatched grouping symbol '$token'"))
                     }
                 }
-                tokenList.add(TokenFactory.createGrouper(Grouper.fromSymbol(token), line))
-            } else if (Operator.isValidStart(token[0])) {
+                tokenList.add(TokenFactory.createGrouper(GrouperToken.fromSymbol(token), line))
+            } else if (OperatorToken.isValidStart(token[0])) {
                 // operators
-                if (index < string.length && Operator.isOperator(token + string[index])) {
+                if (index < string.length && OperatorToken.isOperator(token + string[index])) {
                     token += "${string[index++]}"
+                } else if (!OperatorToken.isOperator(token)) {
+                    errorList.add(Error(line, "Scanner", "Unidentified symbol '$token'"))
+                    continue
                 }
-                tokenList.add(TokenFactory.createOperator(Operator.fromSymbol(token), line))
+                tokenList.add(TokenFactory.createOperator(OperatorToken.fromSymbol(token), line))
             } else if (token == "\"") {
                 // strings
                 token = ""
@@ -65,7 +64,7 @@ class Scanner(private val input: String) {
                     token += string[index++]
                 }
                 if (index++ == string.length) {
-                    println("Error at line $line: Unterminated string")
+                    errorList.add(Error(line, "Scanner", "Unterminated string"))
                     break
                 }
                 tokenList.add(TokenFactory.createString(token, line))
@@ -88,17 +87,19 @@ class Scanner(private val input: String) {
                 while (string[index].isLetter() || string[index].isDigit() || string[index] ==  '_') {
                     token += string[index++]
                 }
-                if (Keyword.isKeyword(token)) {
-                    tokenList.add(TokenFactory.createKeyword(Keyword.fromWord(token), line))
+                if (KeywordToken.isKeyword(token)) {
+                    tokenList.add(TokenFactory.createKeyword(KeywordToken.fromWord(token), line))
                 } else {
                     tokenList.add(TokenFactory.createIdentifier(token, line))
                 }
             } else {
-                println("Error at line $line: Unidentified character '$token'")
-                continue
+                errorList.add(Error(line, "Scanner", "Unidentified symbol '$token'"))
             }
         }
-        return tokenList
+        if (grouperStack.isNotEmpty()) {
+            errorList.add(Error(grouperStack[0].second, "Scanner", "Last unclosed grouping symbol '${grouperStack[0].first}'"))
+        }
+        return tokenList.toList()
     }
 }
 

@@ -10,7 +10,7 @@ Adriel Neyro S. Caraig
 ## Keywords
 The currently reserved keywords are the following:
 - Special Values: True, False, Nothing
-- Data Types: Bool, Int, Float, String, Function, Any
+- Data Types: Bool, Int, Float, String, Any
 - Logical Operators: and, or, xor, not
 - Default Case Keyword: otherwise
 
@@ -34,7 +34,7 @@ The currently implemented operators are the following:
 ## Literals
 Each literal can be declared as such:
 ```
-var1 <- False;   ~> Bool
+var1 <- False;  ~> Bool
 var2 <- 0;      ~> Integer
 var3 <- 1.23;   ~> Float
 var4 <- "ABC";  ~> String
