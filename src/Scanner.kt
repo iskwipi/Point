@@ -1,7 +1,7 @@
 class Scanner(private val string: String) {
     val errorList = mutableListOf<Error>()
 
-    fun scanString(): List<Token> {
+    fun scan(): List<Token> {
         // global vars
         val tokenList = mutableListOf<Token>()
         var index = 0

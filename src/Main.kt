@@ -1,14 +1,14 @@
 fun main() {
     while (true) {
         val lines = mutableListOf<String>()
-        while (true) {
+        var line = ""
+        while (!line.contains(';')) {
             print("> ")
-            val line = readln()
-            if (line == "END") break
+            line = readln()
             lines.add(line)
         }
         val scanner = Scanner(lines.joinToString("\n", "", "\n"))
-        val tokenList = scanner.scanString()
+        val tokenList = scanner.scan()
         for (token in tokenList) println(token)
         println("--------------------------------------------------------------------------------")
     }

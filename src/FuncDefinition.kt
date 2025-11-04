@@ -1,4 +1,4 @@
-// funcDefinition -> funcPremise "=" funcLogic
+// funcDefinition -> "define" funcPremise "=" funcLogic
 data class FuncDefinition(
     val premise: FuncPremise,
     val logic: FuncLogic,

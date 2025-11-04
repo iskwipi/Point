@@ -11,6 +11,7 @@ enum class KeywordToken(private val word: String): TokenType {
     OR("or"),
     XOR("xor"),
     NOT("not"),
+    DEFINE("define"),
     OTHERWISE("otherwise");
 
     fun getWord(): String = word

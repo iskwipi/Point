@@ -12,6 +12,7 @@ The currently reserved keywords are the following:
 - Special Values: True, False, Nothing
 - Data Types: Bool, Int, Float, String, Any
 - Logical Operators: and, or, xor, not
+- Function Definition Keyword: define
 - Default Case Keyword: otherwise
 
 ## Operators
@@ -25,7 +26,7 @@ The currently implemented operators are the following:
 - Conditional Lambda: ->
 - Unconditional Lambda: =>
 - Forwarder Operator: >>
-- Argument Separator: ,
+- Argument/Clause Separator: ,
 - Function Call Operator: ()
 - Array Declaration Operator: []
 - Condition Group Operator: {}
@@ -105,43 +106,43 @@ int_array2
 
 ~> complete syntax for function definition
 ~> parameter and return type should always be declared
-isPositive(num: Int): Bool = (num >= 0);
+define isPositive(num: Int): Bool = (num >= 0);
 
 ~> overloading the plus() function to work with different types
-plus(left: Int, right: Any): Int = left + int(right);
-plus(left: Float, right: Any): Float = left + float(right);
-plus(left: String, right: Any): String = concatenate(left, string(right));
+define plus(left: Int, right: Any): Int = left + int(right);
+define plus(left: Float, right: Any): Float = left + float(right);
+define plus(left: String, right: Any): String = concatenate(left, string(right));
 
 ~> otherwise keyword to signify default case
 ~> return Nothing to signify invalid input
 ~> type declaration considers Nothing with '?'
-factorial(num: Int): Int? = {
-    num > 0 -> num * factorial(num - 1);
-    num == 0 -> 1;
-    otherwise -> Nothing;
+define factorial(num: Int): Int? = {
+    num > 0 -> num * factorial(num - 1),
+    num == 0 -> 1,
+    otherwise -> Nothing
 };
 
 ~> printing helper functions
 ~> note: most helper functions just return original first argument
-print(object: Any): Any;
-print(object: [Any]): [Any];
-display(object: [Any], formatting: String): [Any];
-concatenate(left: String, right: Any): String;
+define print(object: Any): Any;
+define print(object: [Any]): [Any];
+define display(object: [Any], formatting: String): [Any];
+define concatenate(left: String, right: Any): String;
 
 ~> array handling helper functions
 ~> note: arrays must only contain one type
-concatenate(left: [Any], right: [Any]): [Any];
-flatten(collection: [[Any]]): [Any];
+define concatenate(left: [Any], right: [Any]): [Any];
+define flatten(collection: [[Any]]): [Any];
 
 ~> array processing helper functions
 ~> note: default value permitted in parameter declaration
-map(collection: [Any], transformer: Function): [Any];
-sort(collection: [Any], transformer: Function, descending: Bool <- False): [Any];
+define map(collection: [Any], transformer: Function): [Any];
+define sort(collection: [Any], transformer: Function, descending: Bool <- False): [Any];
 
 ~> array reducing helper functions
 ~> note: function as argument should always be defined first before use
-filter(collection: [Any], reducer: Function): [Any];
-fold(collection: [Any], reducer: Function, initial: Any): Any;
+define filter(collection: [Any], reducer: Function): [Any];
+define fold(collection: [Any], reducer: Function, initial: Any): Any;
 ```
 
 ## Design Rationale
