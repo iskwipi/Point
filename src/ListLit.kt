@@ -1,4 +1,4 @@
 data class ListLit(
-    val items: List<Literal>,
+    val items: List<Expression>,
     override val position: Position
 ): Literal

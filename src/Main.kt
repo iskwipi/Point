@@ -10,6 +10,9 @@ fun main() {
         val scanner = Scanner(lines.joinToString("\n", "", "\n"))
         val tokenList = scanner.scan()
         for (token in tokenList) println(token)
+        val parser = Parser(tokenList)
+        val program = parser.parse()
+        parser.printProgram(program)
         println("--------------------------------------------------------------------------------")
     }
 }

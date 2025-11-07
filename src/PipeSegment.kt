@@ -1,2 +1,6 @@
-// pipeSegment -> funcCall | lambdaExpression
-sealed interface PipeSegment: ASTNode
+// pipeSegment -> (identifier "=>")? funcCall
+data class PipeSegment(
+    val parameter: Identifier?,
+    val call: FuncCall,
+    override val position: Position
+): ASTNode

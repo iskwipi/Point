@@ -1,3 +1,4 @@
-// type -> baseType ("?")?
-// baseType -> "Bool" | "Int" | "Float" | "String" | "Function" | "Any" | "[" type "]"
+// type -> (baseType | listType) ("?")?
+// baseType -> "Bool" | "Int" | "Float" | "String" | "Any"
+// listType -> "[" type "]"
 sealed interface Type: ASTNode

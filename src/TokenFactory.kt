@@ -2,17 +2,17 @@ object TokenFactory {
     fun createEnd(line: Int): Token {
         return Token(MiscToken.EOF, "", null, line)
     }
-    fun createInt(num: Int, line: Int): Token {
-        return Token(VariableToken.INT, "", num, line)
+    fun createInt(num: String, line: Int): Token {
+        return Token(VariableToken.INT, num, num.toInt(), line)
     }
-    fun createFloat(num: Float, line: Int): Token {
-        return Token(VariableToken.FLOAT, "", num, line)
+    fun createFloat(num: String, line: Int): Token {
+        return Token(VariableToken.FLOAT, num, num.toFloat(), line)
     }
     fun createString(string: String, line: Int): Token {
-        return Token(VariableToken.STRING, "", string, line)
+        return Token(VariableToken.STRING, string, string, line)
     }
     fun createIdentifier(string: String, line: Int): Token {
-        return Token(VariableToken.IDENTIFIER, "", string, line)
+        return Token(VariableToken.IDENTIFIER, string, null, line)
     }
     fun createKeyword(keyword: KeywordToken?, line: Int): Token {
         return Token(

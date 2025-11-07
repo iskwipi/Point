@@ -67,20 +67,20 @@ class Scanner(private val string: String) {
                     errorList.add(Error(line, "Scanner", "Unterminated string"))
                     break
                 }
-                tokenList.add(TokenFactory.createString(token, line))
+                tokenList.add(TokenFactory.createString('"' + token + '"', line))
             } else if (token[0].isDigit()) {
                 // digits
                 while (string[index].isDigit()) {
                     token += string[index++]
                 }
                 if (string[index] != '.') {
-                    tokenList.add(TokenFactory.createInt(token.toInt(), line))
+                    tokenList.add(TokenFactory.createInt(token, line))
                 } else {
                     token += string[index++]
                     while (string[index].isDigit()) {
                         token += string[index++]
                     }
-                    tokenList.add(TokenFactory.createFloat(token.toFloat(), line))
+                    tokenList.add(TokenFactory.createFloat(token, line))
                 }
             } else if (token[0].isLetter()) {
                 // keywords / identifiers

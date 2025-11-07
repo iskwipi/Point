@@ -5,7 +5,7 @@
 Adriel Neyro S. Caraig
 
 ## Language Overview
-\>.< or Point is a functional programming language designed to take advantage of arrows (>>, =>, ->, ~>) as operators. The most important symbol, though, is ">>", or the forwarder operator, as it allows the user to pass the value from its left side as the first argument of the function being called on its right side. This feature aims to improve the readability of chained functions, representing them as an easily traceable pipeline.
+\>.< or Point is a functional programming language designed to take advantage of arrows (>>, =>, ->, ~>) as operators. The most important symbol, though, is '>>', or the forwarder operator, as it allows the user to pass the value from its left side as the first argument of the function being called on its right side. This feature aims to improve the readability of chained functions, representing them as an easily traceable pipeline.
 
 ## Keywords
 The currently reserved keywords are the following:
@@ -23,13 +23,14 @@ The currently implemented operators are the following:
 - Type Declarator: :
 - Nullable Signifier: ?
 - Variable Assignment: <-
-- Conditional Lambda: ->
-- Unconditional Lambda: =>
+- Case Signifier: ->
+- Lambda Operator: =>
 - Forwarder Operator: >>
-- Argument/Clause Separator: ,
-- Function Call Operator: ()
-- Array Declaration Operator: []
-- Condition Group Operator: {}
+- Argument Separator: ,
+- Function Signifier: ()
+- Expression Grouper: ()
+- Literal List Grouper: []
+- Case List Grouper: {}
 - Statement Terminator: ;
 
 ## Literals
@@ -89,15 +90,15 @@ out_string <- "Non-negative sum is: ";
 
 ~> passing variables through function pipelines
 int_array1
-    >> filter(isPositive)                 ~> previous value passed as first argument
-    >> print()                            ~> print value then pass to next function
-    >> fold(plus, 0)                      ~> built-in array reducing functions
-    >> sum: Int => plus(out_string, sum)  ~> lambda function to rearrange arguments
-    >> print();                           ~> original array variable not changed
+    >> filter(isPositive)            ~> previous value passed as first argument
+    >> print()                       ~> print value then pass to next function
+    >> fold(plus, 0)                 ~> built-in array reducing functions
+    >> sum => plus(out_string, sum)  ~> lambda function to rearrange arguments
+    >> print();                      ~> original array variable not changed
 int_array2
-    >> sort(minus, True)                  ~> built-in array processing functions..
-    >> map(factorial)                     ~> that take other functions as arguments..
-    >> print();                           ~> will also be implemented for ease of use
+    >> sort(minus, True)             ~> built-in array processing functions..
+    >> map(factorial)                ~> that take other functions as arguments..
+    >> print();                      ~> will also be implemented for ease of use
 
 ~{
     These are the sample function definitions and the
@@ -127,7 +128,7 @@ define factorial(num: Int): Int? = {
 define print(object: Any): Any;
 define print(object: [Any]): [Any];
 define display(object: [Any], formatting: String): [Any];
-define concatenate(left: String, right: Any): String;
+define concatenate(left: String, right: String): String;
 
 ~> array handling helper functions
 ~> note: arrays must only contain one type
@@ -146,4 +147,38 @@ define fold(collection: [Any], reducer: Function, initial: Any): Any;
 ```
 
 ## Design Rationale
-The design rationale for Point is that sometimes, it is confusing when calling multiple functions continuously for one variable, making the code hard to read. This is where Point comes in, allowing the user to form a pipeline of functions where the variable can just pass through. This design choice makes the program flow easier to understand, even more so for people who are not used to the syntax of imperative languages.
+The design rationale for Point is that sometimes, it is confusing when calling multiple functions continuously for one variable, making the code hard to read. This is where Point comes in, allowing the user to form a pipeline of functions where the variable can just pass through. This design choice makes the program flow easier to understand, even more so for people who are not used to the syntax of imperative languages. Additionally, function definitions are designed to look more like mathematical function definitions for better familiarity for the user.
+
+## Grammar
+```
+program -> (statement)*
+statement -> (varAssignment | funcDefinition) ";"
+varAssignment -> (identifier "<-")? expression (">>" pipeSegment)*
+pipeSegment -> (identifier "=>")? funcCall
+funcDefinition -> "define" funcPremise "=" funcLogic
+funcPremise -> identifier "(" (paramList)? ")" ":" type
+paramList -> parameter ("," parameter)*
+parameter -> typedParam ("<-" literal)?
+typedParam -> identifier ":" type
+type -> (baseType | listType) ("?")?
+baseType -> "Bool" | "Int" | "Float" | "String" | "Any"
+listType -> "[" type "]"
+funcLogic -> expression | caseList
+caseList -> "{" (caseClause)+ "otherwise" "->" expression "}"
+caseClause -> expression "->" expression ","
+expression -> orLogic
+orLogic -> xorLogic ("or" xorLogic)*
+xorLogic -> andLogic ("xor" andLogic)*
+andLogic -> notLogic ("and" notLogic)*
+notLogic -> ("not")? comparison
+comparison -> mathExpression (comparator mathExpression)?
+comparator -> "<" | ">" | "<=" | ">=" | "==" | "!="
+mathExpression -> term (("+" | "-") term)*
+term -> factor (("*" | "/" | "%") factor)*
+factor -> ("+" | "-")? exponent
+exponent -> value ("^" exponent)?
+value -> literal | identifier | funcCall | "(" expression ")"
+literal -> int | float | string | "True" | "False" | "Nothing" | "[" argList "]"
+funcCall -> identifier "(" (argList)? ")"
+argList -> expression ("," expression)*
+```

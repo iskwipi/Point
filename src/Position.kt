@@ -1,4 +1,4 @@
 data class Position(
-    val startLine: Int,
-    val endLine: Int
+    val start: Int,
+    val end: Int
 )
