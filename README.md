@@ -170,12 +170,12 @@ expression -> orLogic
 orLogic -> xorLogic ("or" xorLogic)*
 xorLogic -> andLogic ("xor" andLogic)*
 andLogic -> notLogic ("and" notLogic)*
-notLogic -> ("not")? comparison
+notLogic -> ("not")* comparison
 comparison -> mathExpression (comparator mathExpression)?
 comparator -> "<" | ">" | "<=" | ">=" | "==" | "!="
 mathExpression -> term (("+" | "-") term)*
 term -> factor (("*" | "/" | "%") factor)*
-factor -> ("+" | "-")? exponent
+factor -> ("+" | "-")* exponent
 exponent -> value ("^" exponent)?
 value -> literal | identifier | funcCall | "(" expression ")"
 literal -> int | float | string | "True" | "False" | "Nothing" | "[" argList "]"

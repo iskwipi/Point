@@ -231,10 +231,10 @@ class Parser(private val tokens: List<Token>) {
         return left
     }
     private fun parseNotLogic(): Expression {
-        // notLogic -> ("not")? comparison
+        // notLogic -> ("not")* comparison
         val startLine = peek().line
         if (match(KeywordToken.NOT)) {
-            val expression = parseComparison()
+            val expression = parseNotLogic()
             val endLine = expression.position.end
             return UnaryExpr(UnaryOp.NOT, expression, Position(startLine, endLine))
         }
@@ -285,11 +285,11 @@ class Parser(private val tokens: List<Token>) {
         return left
     }
     private fun parseFactor(): Expression {
-        // factor -> ("+" | "-")? exponent
+        // factor -> ("+" | "-")* exponent
         val startLine = peek().line
         if (peek().type == OperatorToken.PLUS || peek().type == OperatorToken.MINUS) {
             val operator = if (advance().type == OperatorToken.PLUS) UnaryOp.PLUS else UnaryOp.MINUS
-            val exponent = parseExponent()
+            val exponent = parseFactor()
             val endLine = exponent.position.end
             return UnaryExpr(operator, exponent, Position(startLine, endLine))
         }
@@ -369,52 +369,5 @@ class Parser(private val tokens: List<Token>) {
         list.add(parseExpression())
         while (match(OperatorToken.COMMA)) list.add(parseExpression())
         return list.toList()
-    }
-
-    // pretty print utilities
-    private val primitiveTypes = setOf(
-        Int::class.java,
-        Float::class.java,
-        Boolean::class.java,
-        String::class.java,
-        Char::class.java,
-        List::class.java,
-        UnaryOp::class.java,
-        BinaryOp::class.java,
-        TypeName::class.java,
-        Integer::class.java,
-        java.lang.Float::class.java,
-        java.lang.Boolean::class.java
-    )
-    private fun printObject(obj: Any, tabs: Int) {
-        if (obj::class.java in primitiveTypes) {
-            println("${"  ".repeat(tabs)}(${obj::class.java.simpleName})$obj")
-        } else {
-            printNode(obj as ASTNode, tabs)
-        }
-    }
-    private fun printNode(node: ASTNode, tabs: Int) {
-        val javaClass = node.javaClass
-        println("${"  ".repeat(tabs)}${javaClass.name}(")
-        javaClass.declaredFields.forEach {
-            it.isAccessible = true
-            val value = it.get(node)
-            if (value != null && it.name != "position") {
-                if (value is List<*>) {
-                    if (value.isNotEmpty()) {
-                        println("${"  ".repeat(tabs + 1)}${it.name}:")
-                        value.forEach { item ->
-                            printObject(item ?: "", tabs + 2)
-                        }
-                    }
-                } else {
-                    printObject(value, tabs+1)
-                }
-            }
-        }
-        println("${"  ".repeat(tabs)}),")
-    }
-    fun printProgram(program: Program) {
-        for (statement in program.statements) printNode(statement, 0)
     }
 }
