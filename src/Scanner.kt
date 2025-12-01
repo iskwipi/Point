@@ -12,7 +12,7 @@ class Scanner(private val string: String) {
         while (index < string.length) {
             var token = string[index++].toString()
 
-            if (token == " " || token == "\t"){
+            if (token == " " || token == "\t" || token == "\r"){
                 // whitespace
             } else if (token == "\n") {
                 // newline

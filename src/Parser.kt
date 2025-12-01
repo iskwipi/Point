@@ -55,6 +55,8 @@ class Parser(private val tokens: List<Token>) {
                 advance()
                 identifier = expression.copy()
                 expression = parseExpression()
+            } else if (peek().type == OperatorToken.SEMICOLON) {
+                // continue
             } else if (peek().type != OperatorToken.FORWARDER) {
                 expect(OperatorToken.LEFT_ARROW, "Expected '<-' after variable name in variable assignment")
             }
@@ -69,12 +71,12 @@ class Parser(private val tokens: List<Token>) {
         // pipeSegment -> (identifier "=>")? funcCall
         val startLine = peek().line
         var token = expect(VariableToken.IDENTIFIER, "Invalid pipe segment")
-        var identifier = Identifier(token.lexeme, Position(token.line, token.line))
+        var identifier = Identifier(token.lexeme as String, Position(token.line, token.line))
         var parameter: Identifier? = null
         if (match(OperatorToken.LAMBDA_ARROW)) {
             parameter = identifier.copy()
             token = expect(VariableToken.IDENTIFIER, "Invalid lambda function")
-            identifier = Identifier(token.lexeme, Position(token.line, token.line))
+            identifier = Identifier(token.lexeme as String, Position(token.line, token.line))
         }
         val call = parseFuncCall(identifier)
         val endLine = call.position.end
@@ -90,7 +92,7 @@ class Parser(private val tokens: List<Token>) {
     private fun parseFuncPremise(): FuncPremise {
         // funcPremise -> identifier "(" (paramList)? ")" ":" type
         val token = expect(VariableToken.IDENTIFIER, "Expected function name in function definition")
-        val name = Identifier(token.lexeme, Position(token.line, token.line))
+        val name = Identifier(token.lexeme as String, Position(token.line, token.line))
         expect(GrouperToken.LEFT_PAREN, "Expected '(' after function name")
         val parameters = if (peek().type != GrouperToken.RIGHT_PAREN) parseParamList() else emptyList()
         expect(GrouperToken.RIGHT_PAREN, "Expected ')' after parameter list")
@@ -119,7 +121,7 @@ class Parser(private val tokens: List<Token>) {
     private fun parseTypedParam(): TypedParam {
         // typedParam -> identifier ":" type
         val token = expect(VariableToken.IDENTIFIER, "Expected parameter name in function parameters")
-        val name = Identifier(token.lexeme, Position(token.line, token.line))
+        val name = Identifier(token.lexeme as String, Position(token.line, token.line))
         expect(OperatorToken.COLON, "Expected ':' before parameter return type")
         val type = parseType()
         return TypedParam(name, type, Position(name.position.start, type.position.end))
@@ -316,7 +318,7 @@ class Parser(private val tokens: List<Token>) {
             GrouperToken.LEFT_SQUARE -> parseLiteral()
             VariableToken.IDENTIFIER -> {
                 val token = expect(VariableToken.IDENTIFIER)
-                val identifier = Identifier(token.lexeme, Position(token.line, token.line))
+                val identifier = Identifier(token.lexeme as String, Position(token.line, token.line))
                 if (peek().type == GrouperToken.LEFT_PAREN) parseFuncCall(identifier) else identifier
             }
             GrouperToken.LEFT_PAREN -> {

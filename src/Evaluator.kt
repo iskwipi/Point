@@ -4,13 +4,12 @@ class Evaluator(private val program: Program) {
     val errorList = mutableListOf<Error>()
 
     fun evaluate() {
-        val result = evaluate(program)
-        println(result)
+        evaluateProgram(program)
     }
     private fun evaluate(node: ASTNode): Any {
         return when (node) {
-            is Program -> evaluate(node.statements.first())
-            is VarAssignment -> evaluateExpression(node.expression)
+            is VarAssignment -> evaluateVarAssignment(node)
+            is Identifier -> evaluateIdentifier(node)
             is Literal -> evaluateLiteral(node)
             is UnaryExpr -> evaluateUnaryExpr(node)
             is BinaryExpr -> evaluateBinaryExpr(node)
@@ -25,7 +24,6 @@ class Evaluator(private val program: Program) {
                 return error
             }
         }
-
     }
     private fun evaluateLiteral(literal: Literal): Any {
         return when (literal) {
@@ -127,5 +125,24 @@ class Evaluator(private val program: Program) {
     }
     private fun evaluateExpression(expression: Expression): Any {
         return evaluate(expression)
+    }
+    private fun evaluateVarAssignment(assignment: VarAssignment): Any {
+        val value = evaluateExpression(assignment.expression)
+        if (assignment.identifier == null) {
+            println(value)
+        } else if (value is Error) {
+            println(value)
+        } else {
+            val error = Environment.define(assignment.identifier.name, value, assignment.position)
+            if (error == null) // Environment.printVars()
+            else println(error)
+        }
+        return value
+    }
+    private fun evaluateIdentifier(identifier: Identifier): Any {
+        return Environment.get(identifier.name, identifier.position)
+    }
+    private fun evaluateProgram(program: Program) {
+        program.statements.forEach { evaluate(it) }
     }
 }
